@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>A Special Surprise ❤️</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100%;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ff758c, #ff4b8b, #7b2ff7);
+            color: white;
+        }
+
+        /* Full-screen question page */
+
+        #questionSection {
+            min-height: 100vh;
+            width: 100%;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        #questionTitle {
+            font-size: clamp(28px, 5vw, 55px);
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 8px #660033;
+        }
+
+        #questionText {
+            font-size: clamp(23px, 4vw, 43px);
+            line-height: 1.4;
+            max-width: 1100px;
+            margin: 15px auto 30px;
+        }
+
+        #inputSection {
+            width: 100%;
+            text-align: center;
+        }
+
+        #answerInput {
+            display: block;
+            width: min(90%, 500px);
+            padding: 18px;
+            margin: 20px auto;
+            border: 3px solid white;
+            border-radius: 15px;
+            font-size: 24px;
+            text-align: center;
+            outline: none;
+        }
+
+        #answerInput:focus {
+            border-color: #ff0066;
+        }
+
+        button {
+            background: white;
+            color: #ff2875;
+            border: none;
+            padding: 18px 45px;
+            border-radius: 50px;
+            font-size: clamp(18px, 3vw, 25px);
+            font-weight: bold;
+            cursor: pointer;
+            margin: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.06);
+            background: #ffe1ec;
+        }
+
+        #errorMessage {
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        /* Full-screen final message */
+
+        #finalMessage {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            padding: 35px 20px;
+            background: linear-gradient(135deg, #ff758c, #ff4b8b, #7b2ff7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            animation: appear 1.5s ease;
+        }
+
+        #finalMessage h1 {
+            width: 100%;
+            color: white;
+            font-size: clamp(45px, 8vw, 100px);
+            font-weight: 900;
+            line-height: 1.2;
+            text-shadow: 0 0 20px #ff0066, 3px 3px 8px #660033;
+            animation: heartbeat 1.2s infinite;
+            margin: 15px 0;
+        }
+
+        #finalMessage p {
+            color: white;
+            font-size: clamp(18px, 3vw, 28px);
+            font-weight: bold;
+            text-shadow: 2px 2px 5px #660033;
+            margin: 10px 0;
+        }
+
+        /* Nitesh's picture appears only at the end */
+
+        #guyPicture {
+            display: block;
+            width: min(85%, 650px);
+            max-height: 55vh;
+            object-fit: contain;
+            border-radius: 20px;
+            margin: 20px auto 10px;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.6);
+        }
+
+        /* Hide elements until needed */
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Floating hearts */
+
+        .heart {
+            position: fixed;
+            bottom: -50px;
+            z-index: 2000;
+            pointer-events: none;
+            animation: floatUp 5s linear forwards;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-110vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes heartbeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes appear {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Smaller screens */
+
+        @media (max-width: 600px) {
+            #questionSection {
+                padding: 20px 12px;
+            }
+
+            #finalMessage {
+                padding: 20px 12px;
+            }
+
+            #guyPicture {
+                width: 95%;
+                max-height: 45vh;
+            }
+
+            button {
+                padding: 16px 30px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            #finalMessage h1 {
+                animation: none;
+            }
+
+            #finalMessage {
+                animation: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- QUESTION SCREEN -->
+
+    <main id="questionSection">
+
+        <h1 id="questionTitle">A Special Surprise ❤️</h1>
+
+        <p id="questionText">
+            Before we begin, answer a few little questions! 🥹💕
+        </p>
+
+        <div id="inputSection" class="hidden">
+            <input
+                type="number"
+                id="answerInput"
+                placeholder="Enter your answer"
+                autocomplete="off"
+            >
+        </div>
+
+        <p id="errorMessage" role="alert"></p>
+
+        <button id="actionButton" type="button" onclick="nextStep()">
+            Start the Surprise 💖
+        </button>
+
+    </main>
+
+
+    <!-- FINAL MESSAGE SCREEN -->
+
+    <div id="finalMessage" class="hidden">
+
+        <h1>I LOVE YOU TOO<br>NITESH ❤️</h1>
+
+        <p>You are someone very special! 🥹💕</p>
+
+        <p>Forever in my heart! 💖🌹</p>
+
+        <img
+            id="guyPicture"
+            src="{{ url_for('static', filename='nitesh.jpg') }}"
+            alt="Nitesh"
+        >
+
+    </div>
+
+
+    <script>
+        let step = 0;
+        let heartTimer = null;
+
+        const questionTitle = document.getElementById("questionTitle");
+        const questionText = document.getElementById("questionText");
+        const actionButton = document.getElementById("actionButton");
+        const inputSection = document.getElementById("inputSection");
+        const answerInput = document.getElementById("answerInput");
+        const errorMessage = document.getElementById("errorMessage");
+        const questionSection = document.getElementById("questionSection");
+        const finalMessage = document.getElementById("finalMessage");
+
+
+        function showQuestion(title, question, buttonText, needsInput) {
+            questionTitle.textContent = title;
+            questionText.textContent = question;
+            actionButton.textContent = buttonText;
+
+            inputSection.classList.toggle("hidden", !needsInput);
+
+            answerInput.value = "";
+            errorMessage.textContent = "";
+        }
+
+
+function nextStep() {
+
+    // Start the surprise
+    if (step === 0) {
+        step = 1;
+
+        showQuestion(
+            "Question 1 ❤️",
+            "What is your lover's date of birth?",
+            "Next 💕",
+            true
+        );
+
+        answerInput.type = "number";
+        answerInput.focus();
+        return;
+    }
+
+    // Check the day
+    if (step === 1) {
+        if (answerInput.value.trim() !== "25") {
+            errorMessage.textContent =
+                "Oops! That's not correct. Try again! ❤️";
+            return;
+        }
+
+        step = 2;
+
+        showQuestion(
+            "Question 2 💖",
+            "What is your lover's month of birth?",
+            "Next 💕",
+            true
+        );
+
+        answerInput.type = "number";
+        answerInput.focus();
+        return;
+    }
+
+    // Check the month
+    if (step === 2) {
+        if (answerInput.value.trim() !== "10") {
+            errorMessage.textContent =
+                "Oops! That's not correct. Try again! ❤️";
+            return;
+        }
+
+        step = 3;
+
+        showQuestion(
+            "Question 3 🌹",
+            "What is your lover's year of birth?",
+            "Next 💕",
+            true
+        );
+
+        answerInput.type = "number";
+        answerInput.focus();
+        return;
+    }
+
+    // Check the year
+    if (step === 3) {
+        if (answerInput.value.trim() !== "2000") {
+            errorMessage.textContent =
+                "Oops! That's not correct. Try again! ❤️";
+            return;
+        }
+
+        step = 4;
+
+        showQuestion(
+            "Question 4 🐶",
+            "Which animal does your lover prefer?",
+            "Dog 🐶",
+            false
+        );
+
+        actionButton.onclick = function () {
+            checkChoice("dog");
+        };
+
+        addSecondButton("Cat 🐱", function () {
+            checkChoice("cat");
+        });
+
+        return;
+    }
+
+    // The multiple-choice questions use checkChoice()
+    // The remaining YES questions are handled there.
+}
+
+
+// Display the second answer button
+function addSecondButton(text, callback) {
+    let secondButton = document.getElementById("secondButton");
+
+    if (!secondButton) {
+        secondButton = document.createElement("button");
+        secondButton.id = "secondButton";
+        secondButton.type = "button";
+        actionButton.insertAdjacentElement("afterend", secondButton);
+    }
+
+    secondButton.textContent = text;
+    secondButton.classList.remove("hidden");
+    secondButton.onclick = callback;
+}
+
+
+// Check multiple-choice answers
+function checkChoice(answer) {
+    const secondButton = document.getElementById("secondButton");
+
+    if (step === 4) {
+        if (answer !== "dog") {
+            errorMessage.textContent = "Try again! ❤️";
+            return;
+        }
+
+        step = 5;
+
+        if (secondButton) {
+            secondButton.classList.add("hidden");
+        }
+
+        showQuestion(
+            "Question 5 🌅",
+            "Which view would your lover choose?",
+            "Sunset 🌅",
+            false
+        );
+
+        actionButton.onclick = function () {
+            checkChoice("sunset");
+        };
+
+        addSecondButton("Full moon sight 🌕", function () {
+            checkChoice("moon");
+        });
+
+        return;
+    }
+
+    if (step === 5) {
+        if (answer !== "sunset") {
+            errorMessage.textContent = "Try again! ❤️";
+            return;
+        }
+
+        step = 6;
+
+        if (secondButton) {
+            secondButton.classList.add("hidden");
+        }
+
+        showQuestion(
+            "Question 6 💕",
+            "What would your lover choose?",
+            "Gym 🏋️",
+            false
+        );
+
+        actionButton.onclick = function () {
+            checkChoice("gym");
+        };
+
+        addSecondButton("Eating 🍕", function () {
+            checkChoice("eating");
+        });
+
+        return;
+    }
+
+    if (step === 6) {
+        if (answer !== "eating") {
+            errorMessage.textContent = "Try again! ❤️";
+            return;
+        }
+
+        step = 7;
+
+        if (secondButton) {
+            secondButton.classList.add("hidden");
+        }
+
+        showQuestion(
+            "One last thing ❤️",
+            "Do you love Jaanvee?",
+            "YES! 💖",
+            false
+        );
+
+        actionButton.onclick = nextConfirmation;
+    }
+}
+
+
+// First YES confirmation
+function nextConfirmation() {
+    step = 8;
+
+    showQuestion(
+        "Really? 🥹💕",
+        "Are you sure?",
+        "YES! ❤️",
+        false
+    );
+
+    actionButton.onclick = finalConfirmation;
+}
+
+
+// Second YES confirmation
+function finalConfirmation() {
+    step = 9;
+
+    showQuestion(
+        "Think carefully! 💗",
+        "Are you really sure?",
+        "YES, I'M SURE! 💖",
+        false
+    );
+
+    actionButton.onclick = revealFinalMessage;
+}
+
+
+// Reveal the final surprise
+function revealFinalMessage() {
+    questionSection.classList.add("hidden");
+    finalMessage.classList.remove("hidden");
+
+    for (let i = 0; i < 15; i++) {
+        setTimeout(createHeart, i * 150);
+    }
+
+    setInterval(createHeart, 400);
+}
+
+    
+
+
+        // Allow Enter to submit a birthday answer
+        answerInput.addEventListener("keydown", function(event) {
+            if (event.key === "Enter" && step >= 1 && step <= 3) {
+                nextStep();
+            }
+        });
+
+
+        // Create floating hearts
+        function createHeart() {
+
+            const heart = document.createElement("div");
+
+            heart.className = "heart";
+
+            const hearts = ["❤️", "💕", "💖", "💗", "💘", "💝"];
+
+            heart.textContent =
+                hearts[Math.floor(Math.random() * hearts.length)];
+
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.fontSize = (20 + Math.random() * 30) + "px";
+            heart.style.animationDuration = (3 + Math.random() * 4) + "s";
+
+            document.body.appendChild(heart);
+
+            setTimeout(function() {
+                heart.remove();
+            }, 8000);
+        }
+    </script>
+
+</body>
+</html>
